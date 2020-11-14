@@ -1,0 +1,36 @@
+image:
+  repository: quay.io/valex/velero
+  tag: v1.4.2_vmware.1
+initContainers:
+   - name: velero-plugin-for-aws
+     image: velero/velero-plugin-for-aws
+  #  imagePullPolicy: IfNotPresent
+     volumeMounts:
+        - mountPath: /target
+          name: plugins
+configuration:
+  provider: aws
+  backupStorageLocation:
+    name: aws
+    bucket: velero
+    config:
+      s3ForcePathStyle: true
+      s3Url: http://minio:9000
+      publicUrl: http://minio.example.local
+      region: minio
+credentials:
+  useSecret: true
+  secretContents:
+    cloud: |
+      [default]
+      aws_access_key_id = minio
+      aws_secret_access_key = minio123
+snapshotsEnabled: false
+configMaps:
+  restic-restore-action-config:
+    labels:
+      velero.io/plugin-config: ""
+      velero.io/restic: RestoreItemAction
+    data:
+      image: quay.io/valex/velero-restic-restore-helper:v1.4.2_vmware.1
+deployRestic: true

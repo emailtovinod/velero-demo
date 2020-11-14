@@ -1,0 +1,7 @@
+persistence:
+  enabled: true
+service:
+  type: ClusterIP
+mongodb:
+  mongodbPassword: password
+  mongodbRootPassword: password

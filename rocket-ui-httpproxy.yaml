@@ -1,0 +1,19 @@
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  labels:
+    app: rocketchat
+  name: rocketchat-httpproxy
+spec:
+  routes:
+  - conditions:
+    - prefix: /
+    pathRewritePolicy:
+      replacePrefix:
+      - prefix: /
+        replacement: /
+    services:
+    - name: rocket-chat-rocketchat
+      port: 80
+  virtualhost:
+    fqdn: rocketchat.example.local

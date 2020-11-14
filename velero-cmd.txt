@@ -1,0 +1,11 @@
+helm repo add minio https://helm.min.io/
+helm install  minio minio/minio -f minio-values.yaml -n velero
+helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts
+helm install  velero-lab vmware-tanzu/velero -f velero-test.yaml -n velero 
+helm repo add stable https://charts.helm.sh/stable
+helm install rocket-chat stable/rocketchat  --namespace rocketchat -f rocket-values.yaml -n rocketchat
+kubectl annotate pod -n rocketchat --selector=release=rocket-chat  backup.velero.io/backup-volumes=datadir --overwrite
+velero schedule create hourly --schedule="@every 1h" --ttl 24h0m0s
+velero backup create before-test-1 --include-namespaces rocketchat --storage-location aws
+velero backup describe before-test-1 --details
+velero restore create --from-backup before-test-1  --include-namespaces rocketchat 

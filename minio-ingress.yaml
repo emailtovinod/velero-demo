@@ -1,0 +1,22 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    labels:
+      app: minio
+      chart: minio-8.0.3
+      heritage: Helm
+      release: minio
+    name: minio
+    namespace: velero
+  spec:
+    rules:
+    - host: minio.example.local
+      http:
+        paths:
+        - backend:
+            serviceName: minio
+            servicePort: 9000
+          path: /
+          pathType: ImplementationSpecific
